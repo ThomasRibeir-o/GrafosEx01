@@ -2,22 +2,42 @@
 
 using namespace std;
 
-int getFornecedores(){
+int getFornecedoresSize(){
+    
+    int fornecedoresSize = 0;
 
-    int fornecedores;
-    cout << "informe a quantidade de fornecedores" << endl;
-    cin >> fornecedores;
+    cout << "informe a quantia de fornecedores" << endl;
+    cin >> fornecedoresSize;
+
+    return fornecedoresSize;
+}
+
+int getConsumidoresSize(){
+    
+    int consumidoresSize = 0;
+
+    cout << "informe a quantia de consumidores" << endl;
+    cin >> consumidoresSize;
+
+    return consumidoresSize;
+}
+
+int* getFornecedores(int fornecedoresSize){
+
+    int* fornecedores = new int[fornecedoresSize];
 
     return fornecedores;
 }
 
-int getConsumidores(){
+int* getConsumidores(int consumidoresSize){
 
-    int consumidores;
-    cout << "informe a quantidade de consumidores" << endl;
-    cin >> consumidores;
+    int* consumidores = new int[consumidoresSize];
 
     return consumidores;
+}
+
+int* fillFornecedores(int* fornecedores, int fornecedores){
+    for
 }
 
 bool balanceamento(int fornecedores, int consumidores){
@@ -43,12 +63,17 @@ int** fillMatriz(int fornecedores, int consumidores, int** matriz){
         }
     }
 
+    return matriz;
+
 }
 
 int main(){
 
-    int fornecedores = getFornecedores();
-    int consumidores = getConsumidores();
+    int fornecedoresSize = getFornecedoresSize();
+    int consumidoresSize = getConsumidoresSize();
+
+    int* fornecedores = getFornecedores(fornecedoresSize);
+    int* consumidores = getConsumidores(consumidoresSize);
 
     int** matriz = getMatriz(fornecedores, consumidores);
 
