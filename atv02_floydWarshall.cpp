@@ -75,7 +75,7 @@ int main(){
     int** matriz = getMatriz(tamanho);
     matriz = fillMatriz(tamanho, matriz);
  
-    cout << endl << "matriz de pesos (D):" << endl;
+    cout << endl << "matriz de pesos (P):" << endl;
     printMatriz(tamanho, matriz);
  
     matriz = floydWarshall(tamanho, matriz);

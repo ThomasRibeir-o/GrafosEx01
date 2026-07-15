@@ -84,12 +84,12 @@ int** getMatriz(int fornecedoresSize, int consumidoresSize){
     return matriz;
 }
 
-int** fillMatriz(int fornecedoresSize, int consumidoresSize, int** matriz){
+int** fillMatrizCusto(int fornecedoresSize, int consumidoresSize, int** matriz){
 
     for(int i = 0; i < fornecedoresSize; i++){
-        for(int l = 0; l < consumidoresSize; l++){
-            cout << "informe o custo" << endl;
-            cin >> matriz[i][l];
+        for(int j = 0; j < consumidoresSize; j++){
+            cout << "informe o custo da posicao: " << i+1 << ", " << j+1 << endl;
+            cin >> matriz[i][j];
         }
     }
 
@@ -100,8 +100,8 @@ int** fillMatriz(int fornecedoresSize, int consumidoresSize, int** matriz){
 void printMatriz(int fornecedoresSize, int consumidoresSize, int** matriz){
  
     for(int i = 0; i < fornecedoresSize; i++){
-        for(int l = 0; l < consumidoresSize; l++){
-            cout << matriz[i][l] << "\t";
+        for(int j = 0; j < consumidoresSize; j++){
+            cout << matriz[i][j] << "\t";
         }
         cout << endl;
     }
@@ -161,6 +161,54 @@ int** cantoNoroeste(int* fornecedores, int fornecedoresSize, int* consumidores, 
     return alocacao;
 }
 
+int getCustoTotal(int fornecedoresSize, int consumidoresSize, int** alocacao, int** custo){
+    // percorre as duas matrizes juntas e soma alocacao[i][j] * custo[i][j]
+    int soma =0;
+
+    for(int i = 0; i < fornecedoresSize; i++){
+        for(int j = 0; j < consumidoresSize; j++){
+            soma += alocacao[i][j] * custo[i][j];
+        }
+    }
+
+    return soma;
+
+}
+
+void getMenorCusto(int fornecedoresSize, int consumidoresSize, int** custo, int* ofertaCopia, int* demandaCopia, int &linhaEscolhida, int &colunaEscolhida){
+    int menorCusto = 999999; 
+    
+    for(int i = 0; i < fornecedoresSize; i++){
+        for(int j = 0; j < consumidoresSize; j++){
+            if(ofertaCopia[i] > 0 && demandaCopia[j] > 0 && custo[i][j] < menorCusto){
+                menorCusto = custo[i][j];
+                linhaEscolhida = i;
+                colunaEscolhida = j;
+            }
+        }
+    }
+}
+
+int** menorCusto(int fornecedoresSize, int consumidoresSize, int* fornecedores, int* consumidores, int** custo){
+    int** alocacao = getMatrizAlocacao(fornecedoresSize, consumidoresSize);
+    int* ofertaCopia = copiaVetor(fornecedores, fornecedoresSize);
+    int* demandaCopia = copiaVetor(consumidores, consumidoresSize);
+    
+    while(somaVetor(ofertaCopia, fornecedoresSize) > 0){
+        int linha = -1;
+        int coluna = -1;
+        getMenorCusto(fornecedoresSize, consumidoresSize, custo, ofertaCopia, demandaCopia, linha, coluna);
+
+        int alocado = min(ofertaCopia[linha], demandaCopia[coluna]);
+        alocacao[linha][coluna] = alocado;
+
+        ofertaCopia[linha] -= alocado;
+        demandaCopia[coluna] -= alocado;
+    }
+
+    return alocacao;
+}
+
 int main(){
 
     int fornecedoresSize = getFornecedoresSize();
@@ -181,7 +229,7 @@ int main(){
     int** matrizAlocacao = getMatrizAlocacao(fornecedoresSize, consumidoresSize);
 
     int** matrizCusto = getMatriz(fornecedoresSize, consumidoresSize);
-    matrizCusto = fillMatriz(fornecedoresSize, consumidoresSize, matrizCusto);
+    matrizCusto = fillMatrizCusto(fornecedoresSize, consumidoresSize, matrizCusto);
 
     //printMatriz(fornecedoresSize, consumidoresSize, matrizCusto);
 
@@ -197,9 +245,16 @@ int main(){
         if(option == 1){
             matrizAlocacao = cantoNoroeste(fornecedores, fornecedoresSize, consumidores, consumidoresSize);
             printMatriz(fornecedoresSize, consumidoresSize, matrizAlocacao);
-        }else if(option == 2){
 
-            
+            cout << "soma total do canto noroeste:" << endl;
+            cout << getCustoTotal(fornecedoresSize, consumidoresSize, matrizAlocacao, matrizCusto) << endl;
+
+        }else if(option == 2){
+            matrizAlocacao = menorCusto(fornecedoresSize, consumidoresSize, fornecedores, consumidores, matrizCusto);
+            printMatriz(fornecedoresSize, consumidoresSize, matrizAlocacao);
+
+            cout << "soma total do menor custo:" << endl;
+            cout << getCustoTotal(fornecedoresSize, consumidoresSize, matrizAlocacao, matrizCusto) << endl;
 
         }else if(option == -1){
 
@@ -211,3 +266,4 @@ int main(){
     return 0;
 }
 
+//https://excalidraw.com/#room=b9d0715350a27276e0e7,1rOShd0i2POw5N3VISgxwA
